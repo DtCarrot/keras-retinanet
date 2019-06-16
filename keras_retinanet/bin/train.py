@@ -224,20 +224,36 @@ def create_generators(args, preprocess_image):
 
     # create random transform generator for augmenting training data
     if args.random_transform:
-        transform_generator = random_transform_generator(
-            min_rotation=-0.1,
-            max_rotation=0.1,
-            min_translation=(-0.1, -0.1),
-            max_translation=(0.1, 0.1),
-            min_shear=-0.1,
-            max_shear=0.1,
-            min_scaling=(0.9, 0.9),
-            max_scaling=(1.1, 1.1)
-            # flip_x_chance=0.5,
-            # flip_y_chance=0.5,
-        )
+        if args.random_transform_settings:
+            transform_settings_dict = args.random_transform_settings
+            transform_generator = random_transform_generator(
+                min_rotation= transform_settings_dict['min_rotation'],
+                max_rotation= transform_settings_dict['max_rotation'],
+                min_translation= transform_settings_dict['min_translation'],
+                max_translation= transform_settings_dict['max_translation'],
+                min_shear = transform_settings_dict['min_shear'],
+                max_shear = transform_settings_dict['max_shear'],
+                min_scaling = transform_settings_dict['min_scaling'],
+                max_scaling = transform_settings_dict['max_scaling'], 
+                flip_x_chance = transform_settings_dict['flip_x_chance'],
+                flip_y_chance = transform_settings_dict['flip_y_chance']
+            )
+        else:
+            transform_generator = random_transform_generator(
+                min_rotation=-0.1,
+                max_rotation=0.1,
+                min_translation=(-0.1, -0.1),
+                max_translation=(0.1, 0.1),
+                min_shear=-0.1,
+                max_shear=0.1,
+                min_scaling=(0.9, 0.9),
+                max_scaling=(1.1, 1.1)
+                # flip_x_chance=0.5,
+                # flip_y_chance=0.5,
+            )
     else:
         transform_generator = random_transform_generator(flip_x_chance=0.5)
+
 
     if args.dataset_type == 'coco':
         # import here to prevent unnecessary dependency on cocoapi
